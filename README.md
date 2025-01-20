@@ -38,5 +38,5 @@ Implement a dark mode switch that affects both the 3D-scene and form section.
 
 ## Technology stack
 
-React, Three.js, react-three-fiber, MUI
+React, Three.js, react-three-fiber, MUI, SASS
 Mock server miragejs
