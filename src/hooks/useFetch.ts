@@ -1,26 +1,39 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
-export function useFetch<T>(url: string, callback: (data: T) => void) {
-  const [data, setData] = useState(null);
+export function useFetch<T, Q>(url: string, callback: (data: T) => void) {
+  const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | Error>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        setData(data);
-        setLoading(false);
-        callback(data);
-      } catch (error) {
-        setError(error as Error);
-        setLoading(false);
-      }
-    };
+  const fetchData = async (query?: Q) => {
 
-    fetchData();
-  }, [url, callback]);
+    // if (query) {
+    //   url += `?${new URLSearchParams(query)}`;
+    // }
 
-  return { data, loading, error };
+    console.log(url);
+
+    try {
+      console.log('startFetch');
+      const response = await fetch(url);
+      console.log('endFetch');
+      console.log(response);
+      const data = await response.json();
+      setData(data);
+      setLoading(false);
+      callback(data);
+    } catch (error) {
+      setError(error as Error);
+      setLoading(false);
+    }
+  };
+
+  useLayoutEffect(() => { }, [data, loading, error]);
+
+  const runFetch = (query?: Q) => {
+    console.log('runFetch', query);
+    fetchData(query);
+  };
+
+  return { data, loading, error, runFetch };
 }
