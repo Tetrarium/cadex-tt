@@ -1,21 +1,26 @@
-import { Input } from "@mui/base";
+import { useInput } from "@/hooks/useInput";
 
 import s from "./form.module.sass";
 
 const Form = () => {
+  const [height, setHeight] = useInput();
+  const [width, setWidth] = useInput();
+  const [length, setLength] = useInput();
+
+
   return (
-    <form>
+    <form className={s.form}>
       <div className={s.row}>
         <label htmlFor="height">Height</label>
-        <Input type="number" id="height" />
+        <input className={s.input} value={height} onChange={setHeight} type="number" id="height" />
       </div>
       <div className={s.row}>
         <label htmlFor="width">Width</label>
-        <Input type="number" id="width" />
+        <input className={s.input} value={width} onChange={setWidth} type="number" id="width" />
       </div>
       <div className={s.row}>
         <label htmlFor="length">Length</label>
-        <Input type="number" id="length" />
+        <input className={s.input} value={length} onChange={setLength} type="number" id="length" />
       </div>
     </form>
   );
