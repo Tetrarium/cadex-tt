@@ -1,17 +1,22 @@
 import { Box } from "@/models/models";
 
+const DIVIDER = 2 * 100;
 export function generateBoxGeometry(box: Box) {
-  const { height: H, width: W, length: L } = box;
+  const { height, width, length } = box;
+
+  const H = height / DIVIDER;
+  const W = width / DIVIDER;
+  const L = length / DIVIDER;
 
   const vertices = [
-    0, 0, 0,
-    L, 0, 0,
-    L, W, 0,
-    0, W, 0,
-    0, 0, H,
-    L, 0, H,
+    -L, -W, -H,
+    L, -W, -H,
+    L, W, -H,
+    -L, W, -H,
+    -L, -W, H,
+    L, -W, H,
     L, W, H,
-    0, W, H,
+    -L, W, H,
   ];
 
   const indices = [
