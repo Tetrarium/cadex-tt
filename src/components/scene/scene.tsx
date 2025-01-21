@@ -1,174 +1,70 @@
-import { useState } from "react";
+import React from "react";
+import { BufferGeometry, Float32BufferAttribute } from "three";
 
 import { Canvas } from "@react-three/fiber";
 
-import s from "./scene.module.sass";
+const vertices = [
+  0, 0, 0,
+  1, 0, 0,
+  1, 1, 0,
+  0, 1, 0,
+  0, 0, 1,
+  1, 0, 1,
+  1, 1, 1,
+  0, 1, 1
+];
 
-const minMax = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
+const indices = [
+  0, 2, 1,
+  0, 3, 2,
+  4, 5, 6,
+  4, 6, 7,
+  0, 1, 5,
+  0, 5, 4,
+  2, 3, 7,
+  2, 7, 6,
+  0, 7, 3,
+  0, 4, 7,
+  1, 2, 6,
+  1, 6, 5,
+];
 
-const Scene = () => {
-  const [intensity, setIntensity] = useState(0);
-  const [scale, setScale] = useState(1);
+const TriangulatedCube = () => {
 
-  const [boxPosition, setBoxPosition] = useState([0, 0, 0]);
-  const [rotation, setRotation] = useState([0, 0, 0]);
 
-  const [boxColor, setBoxColor] = useState(0xff0000);
-  const [ambientColor, setAmbientColor] = useState(0xffffff);
+  const geometry = React.useMemo(() => {
+    const geo = new BufferGeometry();
+    geo.setAttribute("position", new Float32BufferAttribute(vertices, 3));
 
-  const [dragging, setDragging] = useState(false);
-  const [rotating, setRotating] = useState(false);
+    geo.setIndex(indices);
+
+    geo.computeVertexNormals();
+
+    return geo;
+  }, []);
+
+  const rotation = React.useMemo((): [number, number, number] => [.4, 0.9, 0], []);
 
   return (
-    <div className={s.container}>
-      <div>
-        <div className={s.intensity}>
-          <span>Intencity: {intensity.toFixed(2)}</span>
-          <input
-            className={s.slider}
-            type="range"
-            min="-1"
-            max="1"
-            step="0.01"
-            value={intensity}
-            onChange={e => setIntensity(Number(e.target.value))}
-          />
-        </div>
-        <div>Scale: {Math.round(scale * 100)} %</div>
-      </div>
-      <div className={s.controls}>
-        <h3>Colors</h3>
-        <div className={s.controls__row}>
-          <span>Box color</span>
-          <input type="color" value={`#${boxColor.toString(16)}`} onChange={e => setBoxColor(Number(`0x${e.target.value.slice(1)}`))} />
-        </div>
-        <div className={s.controls__row}>
-          <span>Ambient color</span>
-          <input type="color" value={`#${ambientColor.toString(16)}`} onChange={e => setAmbientColor(Number(`0x${e.target.value.slice(1)}`))} />
-        </div>
-      </div>
-      <div className={s.controls}>
-        <h3>Box position</h3>
-        <div className={s.controls__row}>
-          <span>X: {boxPosition[0].toFixed(2)}</span>
-          <input
-            className={s.slider}
-            type="range"
-            min="-1"
-            max="1"
-            step="0.01"
-            value={boxPosition[0]}
-            onChange={e => setBoxPosition(prev => [Number(e.target.value), prev[1], prev[2]])}
-          />
-        </div><div className={s.controls__row}>
-          <span>Y: {boxPosition[1].toFixed(2)}</span>
-          <input
-            className={s.slider}
-            type="range"
-            min="-1"
-            max="1"
-            step="0.01"
-            value={boxPosition[1]}
-            onChange={e => setBoxPosition(prev => [prev[0], Number(e.target.value), prev[2]])}
-          />
-        </div><div className={s.controls__row}>
-          <span>Z: {boxPosition[2].toFixed(2)}</span>
-          <input
-            className={s.slider}
-            type="range"
-            min="-1"
-            max="1"
-            step="0.01"
-            value={boxPosition[2]}
-            onChange={e => setBoxPosition(prev => [prev[0], prev[1], Number(e.target.value)])}
-          />
-        </div>
-      </div>
-      <div className={s.controls}>
-        <h3>Rotation</h3>
-        <div className={s.controls__row}>
-          <span>X: {rotation[0].toFixed(2)}</span>
-          <input
-            className={s.slider}
-            type="range"
-            min={Math.PI * -1}
-            max={Math.PI}
-            step="0.01"
-            value={rotation[0]}
-            onChange={e => setRotation(prev => [Number(e.target.value), prev[1], prev[2]])}
-          />
-        </div><div className={s.controls__row}>
-          <span>Y: {rotation[1].toFixed(2)}</span>
-          <input
-            className={s.slider}
-            type="range"
-            min={Math.PI * -1}
-            max={Math.PI}
-            step="0.01"
-            value={rotation[1]}
-            onChange={e => setRotation(prev => [prev[0], Number(e.target.value), prev[2]])}
-          />
-        </div><div className={s.controls__row}>
-          <span>Z: {rotation[2].toFixed(2)}</span>
-          <input
-            className={s.slider}
-            type="range"
-            min={Math.PI * -1}
-            max={Math.PI}
-            step="0.01"
-            value={rotation[2]}
-            onChange={e => setRotation(prev => [prev[0], prev[1], Number(e.target.value)])}
-          />
-        </div>
-      </div>
-      <Canvas
-        onWheel={e => setScale(prev => {
-          const newScale = prev + (-e.deltaY / 100 * 0.05);
-
-          return minMax(newScale, 0.1, 5);
-        })}
-
-        onPointerDown={e => {
-          console.log(e.button);
-          if (e.button === 0) {
-            setDragging(true);
-          }
-
-          if (e.button === 1) {
-            setRotating(true);
-          }
-        }}
-        onPointerUp={e => {
-          if (e.button === 0) {
-            setDragging(false);
-          }
-
-          if (e.button === 1) {
-            setRotating(false);
-          }
-        }}
-        onPointerMove={e => {
-          if (dragging) {
-            setBoxPosition(prev => [prev[0] + e.movementX / 100, prev[1] - e.movementY / 100, prev[2]]);
-          }
-
-          if (rotating) {
-            setRotation(prev => [prev[0] + e.movementY / 100, prev[1] + e.movementX / 100, prev[2]]);
-          }
-        }}
-
-
-        className={s.canvas}
-      >
-        <mesh scale={scale} userData={{ name: "box" }} position={boxPosition} rotation={rotation} shadow baseColor={ambientColor}>
-          <ambientLight intensity={intensity} color={ambientColor} />
-          <directionalLight color={boxColor} position={[1, 2, 3]} />
-          <boxGeometry args={[1, 1, 2]} />
-          <meshStandardMaterial />
-        </mesh>
-      </Canvas>
-    </div>
+    <>
+      <mesh geometry={geometry} rotation={rotation} position={[0, 0, -5]}>
+        <meshStandardMaterial color={0xff0000} wireframe={false} />
+      </mesh>
+      <mesh geometry={geometry} rotation={rotation} position={[0, 0, -5]}>
+        <meshStandardMaterial color={0x00ff00} wireframe={true} />
+      </mesh>
+    </>
   );
 };
 
-export default Scene;;
+const Scene = () => {
+  return (
+    <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+      <ambientLight intensity={0.6} />
+      <pointLight position={[10, 10, 10]} />
+      <TriangulatedCube />
+    </Canvas>
+  );
+};
+
+export default Scene;
