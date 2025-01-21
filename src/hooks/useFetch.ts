@@ -1,21 +1,22 @@
-import { useLayoutEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 export function useFetch<T, Q>(url: string, callback: (data: T) => void) {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | Error>(null);
 
-  const fetchData = async (query?: Q) => {
-
-    // if (query) {
-    //   url += `?${new URLSearchParams(query)}`;
-    // }
+  const fetchData = useCallback(async (query?: Q) => {
+    let fullUrl = url;
+    if (query) {
+      fullUrl = url + `?${new URLSearchParams(query)}`;
+    }
 
     console.log(url);
 
     try {
+      setLoading(true);
       console.log('startFetch');
-      const response = await fetch(url);
+      const response = await fetch(fullUrl);
       console.log('endFetch');
       console.log(response);
       const data = await response.json();
@@ -26,9 +27,7 @@ export function useFetch<T, Q>(url: string, callback: (data: T) => void) {
       setError(error as Error);
       setLoading(false);
     }
-  };
-
-  useLayoutEffect(() => { }, [data, loading, error]);
+  }, [url, callback]);
 
   const runFetch = (query?: Q) => {
     console.log('runFetch', query);

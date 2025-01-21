@@ -7,11 +7,12 @@ import { Button } from "@mui/base";
 import s from "./form.module.sass";
 
 interface FormProps {
+  isLoading?: boolean;
   onSubmit: (box: Box) => void;
 }
 
 
-const Form: FC<FormProps> = ({ onSubmit }) => {
+const Form: FC<FormProps> = ({ onSubmit, isLoading = false }) => {
   const [height, setHeight] = useInput();
   const [width, setWidth] = useInput();
   const [length, setLength] = useInput();
@@ -36,7 +37,7 @@ const Form: FC<FormProps> = ({ onSubmit }) => {
         <input className={s.input} value={length} onChange={setLength} type="number" id="length" />
       </div>
       <div className={s.control}>
-        <Button type="submit">Submit</Button>
+        <Button disabled={isLoading} type="submit">Submit</Button>
       </div>
     </form>
   );
