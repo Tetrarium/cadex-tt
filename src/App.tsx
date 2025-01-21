@@ -1,5 +1,6 @@
 import s from "./app.module.sass";
 import Form from "./components/form/form";
+import Scene from "./components/scene/scene";
 import { useFetch } from "./hooks/useFetch";
 import { Box } from "./models/models";
 
@@ -18,7 +19,7 @@ function App() {
       <div className={s.menu}>
         <Form onSubmit={handleSubmit} isLoading={loading} />
       </div>
-      <div className={s.scene}>scene</div>
+      <div className={s.scene}><Scene /></div>
     </div>
   );
 }
