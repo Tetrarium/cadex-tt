@@ -7,18 +7,16 @@ export function useFetch<T, Q>(url: string, callback: (data: T) => void) {
 
   const fetchData = useCallback(async (query?: Q) => {
     let fullUrl = url;
+
+    // console.log(query);
+
     if (query) {
       fullUrl = url + `?${new URLSearchParams(query)}`;
     }
 
-    console.log(url);
-
     try {
       setLoading(true);
-      console.log('startFetch');
       const response = await fetch(fullUrl);
-      console.log('endFetch');
-      console.log(response);
       const data = await response.json();
       setData(data);
       setLoading(false);

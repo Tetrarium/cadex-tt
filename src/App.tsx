@@ -1,13 +1,15 @@
 import s from "./app.module.sass";
 import Form from "./components/form/form";
-import Scene from "./components/scene/scene";
+import Scene, { BoxProps } from "./components/scene/scene";
 import { useFetch } from "./hooks/useFetch";
 import { Box } from "./models/models";
 
 function App() {
-  const { data, runFetch, loading } = useFetch<Box, Box>("/api/box", (data) => { console.log(data); });
+  const { data, runFetch, loading, error } = useFetch<BoxProps, Box>("/api/box", (data) => { console.log(data); });
 
-  console.log(data);
+  if (error) {
+    console.error(error);
+  }
 
   const handleSubmit = (box: Box) => {
     console.log(box);
@@ -19,7 +21,9 @@ function App() {
       <div className={s.menu}>
         <Form onSubmit={handleSubmit} isLoading={loading} />
       </div>
-      <div className={s.scene}><Scene /></div>
+      <div className={s.scene}>
+        <Scene indices={data?.indices} vertices={data?.vertices} />
+      </div>
     </div>
   );
 }

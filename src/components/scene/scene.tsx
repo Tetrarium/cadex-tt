@@ -1,35 +1,16 @@
-import React from "react";
+import React, { FC } from "react";
 import { BufferGeometry, Float32BufferAttribute } from "three";
 
 import { Canvas } from "@react-three/fiber";
 
-const vertices = [
-  0, 0, 0,
-  1, 0, 0,
-  1, 1, 0,
-  0, 1, 0,
-  0, 0, 1,
-  1, 0, 1,
-  1, 1, 1,
-  0, 1, 1
-];
+import s from "./scene.module.sass";
 
-const indices = [
-  0, 2, 1,
-  0, 3, 2,
-  4, 5, 6,
-  4, 6, 7,
-  0, 1, 5,
-  0, 5, 4,
-  2, 3, 7,
-  2, 7, 6,
-  0, 7, 3,
-  0, 4, 7,
-  1, 2, 6,
-  1, 6, 5,
-];
+export interface BoxProps {
+  indices: number[],
+  vertices: number[],
+}
 
-const TriangulatedCube = () => {
+const TriangulatedCube: FC<BoxProps> = ({ indices, vertices }) => {
 
 
   const geometry = React.useMemo(() => {
@@ -41,7 +22,7 @@ const TriangulatedCube = () => {
     geo.computeVertexNormals();
 
     return geo;
-  }, []);
+  }, [indices, vertices]);
 
   const rotation = React.useMemo((): [number, number, number] => [.4, 0.9, 0], []);
 
@@ -57,13 +38,17 @@ const TriangulatedCube = () => {
   );
 };
 
-const Scene = () => {
+const Scene: FC<Partial<BoxProps>> = ({ indices, vertices }) => {
   return (
-    <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-      <ambientLight intensity={0.6} />
-      <pointLight position={[10, 10, 10]} />
-      <TriangulatedCube />
-    </Canvas>
+    <div className={s.container}>
+      {indices && vertices &&
+        <Canvas camera={{ position: [0, 0, 5], fov: 75 }} >
+          <ambientLight intensity={0.6} />
+          <pointLight position={[10, 10, 10]} />
+          <TriangulatedCube indices={indices} vertices={vertices} />
+        </Canvas>
+      }
+    </div>
   );
 };
 
