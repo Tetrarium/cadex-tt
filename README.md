@@ -1,3 +1,25 @@
+[![Deploy static content to Pages](https://github.com/Tetrarium/cadex-tt/actions/workflows/jekyll-gh-pages.yml/badge.svg)](https://github.com/Tetrarium/cadex-tt/actions/workflows/jekyll-gh-pages.yml)
+
+## Deploy
+
+[https://tetrarium.github.io/cadex-tt/](https://tetrarium.github.io/cadex-tt/)
+
+## Install
+
+```bash
+git clone git@github.com:Tetrarium/cadex-tt.git
+cd cadex-tt
+npm install
+```
+
+## Run
+
+```bash
+npm run dev
+```
+
+Go to [http://localhost:3000](http://localhost:3000)
+
 # Test task Web-development
 
 Create a simple client-server web app that includes a 3D box in a Three.js scene and a
