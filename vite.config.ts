@@ -4,8 +4,8 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: '/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? 'https://tetrarium.github.io/cadex-tt/' : '/',
   build: {
     emptyOutDir: true,
     outDir: './dist',
@@ -27,4 +27,4 @@ export default defineConfig({
       }
     ]
   }
-});
+}));
