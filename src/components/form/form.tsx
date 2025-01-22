@@ -37,7 +37,7 @@ const Form: FC<FormProps> = ({ onSubmit, isLoading = false }) => {
         <input className={s.input} value={length} onChange={setLength} type="number" id="length" />
       </div>
       <div className={s.control}>
-        <Button disabled={isLoading} type="submit">Submit</Button>
+        <Button disabled={isLoading} type="submit" className={s.button}>Submit</Button>
       </div>
     </form>
   );

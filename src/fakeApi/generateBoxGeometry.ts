@@ -1,6 +1,6 @@
 import { Box } from "@/models/models";
 
-const DIVIDER = 2 * 100;
+const DIVIDER = 2 * 10;
 export function generateBoxGeometry(box: Box) {
   const { height, width, length } = box;
 

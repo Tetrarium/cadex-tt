@@ -12,8 +12,21 @@ makeServer();
 
 const theme = createTheme({
   colorSchemes: {
-    dark: true,
-  }
+    dark: {
+      palette: {
+        background: {
+          paper: '#323232'
+        }
+      }
+    },
+    light: {
+      palette: {
+        background: {
+          paper: '#d9d9d9'
+        }
+      }
+    },
+  },
 });
 
 createRoot(document.getElementById('root')!).render(
