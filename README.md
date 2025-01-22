@@ -15,7 +15,7 @@ form to set the box parameters (refer to the image for an example).
 
 4. The form should be built using components from a third-party component library (Ant Design, Material UI, Radix, React Aria, etc.)
 
-5. Form elds should be customized using CSS (including non-default states such as "focus").
+5. Form fields should be customized using CSS (including non-default states such as "focus").
 
 6. The form should send the parameters to the server and get back data for the display of the box.
 
