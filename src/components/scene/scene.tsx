@@ -12,12 +12,14 @@ export interface BoxProps {
 
 type Position = {
   position?: [number, number, number];
+  rotation?: [number, number, number];
 };
 
 const TriangulatedCube: FC<BoxProps & Position> = ({
   indices,
   vertices,
-  position = [0, 0, -5]
+  position = [0, 0, -5],
+  rotation = [.4, 0.9, 0],
 }) => {
 
 
@@ -31,8 +33,6 @@ const TriangulatedCube: FC<BoxProps & Position> = ({
 
     return geo;
   }, [indices, vertices]);
-
-  const rotation = React.useMemo((): [number, number, number] => [.4, 0.9, 0], []);
 
   return (
     <>
@@ -50,15 +50,26 @@ const Scene: FC<Partial<BoxProps>> = ({ indices, vertices }) => {
   const [boxPosition, setBoxPosition] = useState<[number, number, number]>([0, 0, -5]);
   const [isDragging, setIsDragging] = useState(false);
 
+  const [boxRotation, setBoxRotation] = useState<[number, number, number]>([.4, 0.9, 0]);
+  const [isRotating, setIsRotating] = useState(false);
+
   const handlePointerDown = (evt: PointerEvent<HTMLDivElement>) => {
     if (evt.button === 0) {
       setIsDragging(true);
+    }
+
+    if (evt.button === 1) {
+      setIsRotating(true);
     }
   };
 
   const handlePointerUp = (evt: PointerEvent<HTMLDivElement>) => {
     if (evt.button === 0) {
       setIsDragging(false);
+    }
+
+    if (evt.button === 1) {
+      setIsRotating(false);
     }
   };
 
@@ -72,26 +83,43 @@ const Scene: FC<Partial<BoxProps>> = ({ indices, vertices }) => {
         ]
       ));
     }
+
+    if (isRotating) {
+      setBoxRotation(prev => (
+        [
+          prev[0] + evt.movementY / 100,
+          prev[1] + evt.movementX / 100,
+          prev[2],
+        ]
+      ));
+    }
   };
 
   return (
     <div className={s.container}>
       {indices && vertices &&
-        <Canvas
-          className={s.canvas}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerMove={handlePointerMove}
-          camera={{ position: [0, 0, 5], fov: 75 }}
-        >
-          <ambientLight intensity={0.6} />
-          <pointLight position={[10, 10, 10]} />
-          <TriangulatedCube
-            indices={indices}
-            vertices={vertices}
-            position={boxPosition}
-          />
-        </Canvas>
+        <>
+          <div className={s.tip}>
+            <div>Moving: press left mouse button and move</div>
+            <div>Rotation: press wheel and move</div>
+          </div>
+          <Canvas
+            className={s.canvas}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerMove={handlePointerMove}
+            camera={{ position: [0, 0, 5], fov: 75 }}
+          >
+            <ambientLight intensity={0.6} />
+            <pointLight position={[10, 10, 10]} />
+            <TriangulatedCube
+              indices={indices}
+              vertices={vertices}
+              position={boxPosition}
+              rotation={boxRotation}
+            />
+          </Canvas>
+        </>
       }
     </div>
   );
