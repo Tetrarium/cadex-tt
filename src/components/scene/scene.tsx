@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, PointerEvent, useState } from "react";
 import { BufferGeometry, Float32BufferAttribute } from "three";
 
 import { Canvas } from "@react-three/fiber";
@@ -10,7 +10,15 @@ export interface BoxProps {
   vertices: number[],
 }
 
-const TriangulatedCube: FC<BoxProps> = ({ indices, vertices }) => {
+type Position = {
+  position?: [number, number, number];
+};
+
+const TriangulatedCube: FC<BoxProps & Position> = ({
+  indices,
+  vertices,
+  position = [0, 0, -5]
+}) => {
 
 
   const geometry = React.useMemo(() => {
@@ -28,10 +36,10 @@ const TriangulatedCube: FC<BoxProps> = ({ indices, vertices }) => {
 
   return (
     <>
-      <mesh geometry={geometry} rotation={rotation} position={[0, 0, -5]}>
+      <mesh geometry={geometry} rotation={rotation} position={position}>
         <meshStandardMaterial color={0xff0000} wireframe={false} />
       </mesh>
-      <mesh geometry={geometry} rotation={rotation} position={[0, 0, -5]}>
+      <mesh geometry={geometry} rotation={rotation} position={position}>
         <meshStandardMaterial color={0x00ff00} wireframe={true} />
       </mesh>
     </>
@@ -39,13 +47,50 @@ const TriangulatedCube: FC<BoxProps> = ({ indices, vertices }) => {
 };
 
 const Scene: FC<Partial<BoxProps>> = ({ indices, vertices }) => {
+  const [boxPosition, setBoxPosition] = useState<[number, number, number]>([0, 0, -5]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handlePointerDown = (evt: PointerEvent<HTMLDivElement>) => {
+    if (evt.button === 0) {
+      setIsDragging(true);
+    }
+  };
+
+  const handlePointerUp = (evt: PointerEvent<HTMLDivElement>) => {
+    if (evt.button === 0) {
+      setIsDragging(false);
+    }
+  };
+
+  const handlePointerMove = (evt: PointerEvent<HTMLDivElement>) => {
+    if (isDragging) {
+      setBoxPosition(prev => (
+        [
+          prev[0] + evt.movementX / 100,
+          prev[1] - evt.movementY / 100,
+          prev[2],
+        ]
+      ));
+    }
+  };
+
   return (
     <div className={s.container}>
       {indices && vertices &&
-        <Canvas camera={{ position: [0, 0, 5], fov: 75 }} >
+        <Canvas
+          className={s.canvas}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerMove={handlePointerMove}
+          camera={{ position: [0, 0, 5], fov: 75 }}
+        >
           <ambientLight intensity={0.6} />
           <pointLight position={[10, 10, 10]} />
-          <TriangulatedCube indices={indices} vertices={vertices} />
+          <TriangulatedCube
+            indices={indices}
+            vertices={vertices}
+            position={boxPosition}
+          />
         </Canvas>
       }
     </div>
