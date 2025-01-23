@@ -108,7 +108,7 @@ const Scene: FC<Partial<BoxProps>> = ({ indices, vertices }) => {
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onPointerMove={handlePointerMove}
-            camera={{ position: [0, 0, 5], fov: 75 }}
+            camera={{ rotation: [0, 0, 0], position: [0, 0, 0], fov: 100 }}
           >
             <ambientLight intensity={0.6} />
             <pointLight position={[10, 10, 10]} />

@@ -31,7 +31,7 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} defaultMode="dark">
       <App />
     </ThemeProvider>
   </StrictMode>,

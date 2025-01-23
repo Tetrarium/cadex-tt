@@ -8,8 +8,6 @@ export function useFetch<T, Q>(url: string, callback: (data: T) => void) {
   const fetchData = useCallback(async (query?: Q) => {
     let fullUrl = url;
 
-    // console.log(query);
-
     if (query) {
       fullUrl = url + `?${new URLSearchParams(query)}`;
     }
