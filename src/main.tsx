@@ -29,9 +29,15 @@ const theme = createTheme({
   },
 });
 
+let defaultMode: 'light' | 'dark' = 'light';
+
+if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  defaultMode = 'dark';
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider theme={theme} defaultMode="dark">
+    <ThemeProvider theme={theme} defaultMode={defaultMode}>
       <App />
     </ThemeProvider>
   </StrictMode>,
